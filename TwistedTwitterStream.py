@@ -157,10 +157,8 @@ def sample(username, password, consumer):
     tw.make_header(username, password, "GET", "/1/statuses/sample.json")
     reactor.connectSSL("stream.twitter.com", 443, tw)
 
-def filter(username, password, consumer, count=0, delimited=0, track=[], follow=[]):
+def filter(username, password, consumer, delimited=0, track=[], follow=[]):
     qs = []
-    if count:
-        qs.append("count=%s" % urllib.quote(count))
     if delimited:
         qs.append("delimited=%d" % delimited)
     if follow:
@@ -172,5 +170,5 @@ def filter(username, password, consumer, count=0, delimited=0, track=[], follow=
         raise RuntimeError("At least one parameter is required: track or follow")
 
     tw = _TwitterStreamFactory(consumer)
-    tw.make_header(username, password, "POST", "/1/statuses/filter.json", "&".join(qs))
+    tw.make_header(username, password, "POST", "/1.1/statuses/filter.json", "&".join(qs))
     reactor.connectSSL("stream.twitter.com", 443, tw, ssl.ClientContextFactory())
